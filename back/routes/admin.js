@@ -1,14 +1,11 @@
-var express = require("express");
-var router = express.Router();
+const express = require('express')
+const router = express.Router()
 
-const accessControl = require("../middlewares/accessControl");
-const roleControl = require("../middlewares/checkRole");
-const ControllerAdmin = require("../controller/ControllerAdmin");
-const { nextTick } = require("async");
-const connection = accessControl.checkConnection;
-const role = roleControl.checkRole;
-const debug = require('debug')('admin')
-
+const accessControl = require('../middlewares/accessControl')
+const roleControl = require('../middlewares/checkRole')
+const ControllerAdmin = require('../controller/ControllerAdmin')
+const connection = accessControl.checkConnection
+const role = roleControl.checkRole
 
 // ========= API ========== Micro-services =====
 
@@ -18,12 +15,12 @@ const debug = require('debug')('admin')
 }); */
 
 router.put(
-  "/API/role/:role_id/:user_id",
+  '/API/role/:role_id/:user_id',
   connection,
-  role("Administrateur"),
+  role('Administrateur'),
   function (req, res) {
-    ControllerAdmin.updateRoleAPI(req, res);
+    ControllerAdmin.updateRoleAPI(req, res)
   }
-);
+)
 
-module.exports = router;
+module.exports = router

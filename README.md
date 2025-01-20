@@ -32,13 +32,6 @@ This directory contains:
 
 - `back`: code for the monolith.
 
-## Building the app
-
-Once you have cloned the content of this repo, to get the app you either need to build it:
-
-- `cd` to the root of this repo, i.e. that containing (`variables.env`).
-- run `docker build -t "icws24submission/back_monolith" "back"` to build the backend image.
-
 ## Setting up the app
 
 - Uncompress the database archive by typing: `tar xzf v4-soy-db.tgz`.
@@ -115,4 +108,14 @@ When you modified the code of a file, you may edit the copyright notice on top o
 Shell On You, an educational web application to learn shell.
 HERE -> Copyright © <year> modified by <NAME> (<MAIL>)
 Copyright © 2022 POLYTECH MONTPELLIER.
+```
+
+## SonarQube
+```bash
+sonar-scanner \
+  -Dsonar.projectKey=SoYMono \
+  -Dsonar.sources=. \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.token=YOUR_TOKEN
+  -Dsonar.exclusions=v4-soy-db/**,back/node_modules/**
 ```

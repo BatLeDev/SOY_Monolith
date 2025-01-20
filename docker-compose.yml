@@ -1,8 +1,7 @@
-version: "3"
 services:
   back:
     container_name: back
-    image: icws24submission/back_monolith
+    build: ./back/
     security_opt:
       - no-new-privileges:true
     ports:
@@ -19,12 +18,9 @@ services:
     env_file:
       - variables.env
     shm_size: 1g
-  
     ports:
       - "5431:5432"
     security_opt:
       - "no-new-privileges:true"
     volumes:
       - ./v4-soy-db:/var/lib/postgresql/data
-
-  
