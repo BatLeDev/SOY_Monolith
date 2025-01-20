@@ -52,7 +52,6 @@ services:
     user: "1001:1001"
     environment:
       - SONAR_HOST_URL=http://sonarqube:9000
-      - SONAR_LOGIN=sqp_565b1940ed96827aeccbbde028991068cf4a8771
       - SONAR_SOURCES=.
       - SONAR_PROJECT_KEY=Worker
     networks:
