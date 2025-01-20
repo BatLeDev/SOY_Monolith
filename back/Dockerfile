@@ -3,7 +3,7 @@ FROM node:14
 
 WORKDIR /usr/src/app
 
-RUN set -x && apt-get update && apt-get install -y python-pip
+RUN set -x && apt-get update && apt-get install -y python-pip --no-install-recommends
 RUN set -x && pip install psycopg2-binary
 
 
@@ -11,7 +11,7 @@ COPY package.json package.json
 COPY package-lock.json package-lock.json
 
 
-RUN npm install
+RUN npm install --ignore-scripts
 
 COPY . .
 
