@@ -14,7 +14,7 @@ services:
 
   postgres:
     container_name: postgres
-    image: icws24submission/postgres_monolith
+    image: postgres:12.17
     restart: always
     env_file:
       - variables.env

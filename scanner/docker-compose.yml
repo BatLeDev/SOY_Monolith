@@ -40,18 +40,18 @@ services:
       - ${NETWORK_TYPE:-ipv4}
 
   sonar-scanner:
-    build: ./scanner/
+    build: ./
     container_name: sonar_scanner
     depends_on:
       - sonarqube
     volumes:
-      - /home/chouki/Bureau/sonarqube/SOY_Monolith-main:/usr/src
+      - ../:/usr/src
     working_dir: /usr/src
     entrypoint: [ "tail", "-f", "/dev/null" ] # Prevents auto-exit, use docker exec to run commands
     user: "1001:1001"
     environment:
       - SONAR_HOST_URL=http://sonarqube:9000
-      - SONAR_LOGIN=sqp_806254e33f55f6b547587a8e998155599fb8e9b4
+      - SONAR_LOGIN=sqp_565b1940ed96827aeccbbde028991068cf4a8771
       - SONAR_SOURCES=.
       - SONAR_PROJECT_KEY=Worker
     networks:

@@ -17,7 +17,7 @@ router.get("/api/exercise/:exerciseId/skills", function (req, res) {
   ControllerSkillAPI.readAllByEx(req, res);
 });
 
-// TO DO: routes below should be available only with teacher or admin roles !
+// TODO: routes below should be available only with teacher or admin roles !
 
 // Add an array of skills to an exercise
 router.post(
