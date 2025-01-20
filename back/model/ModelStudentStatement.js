@@ -7,6 +7,7 @@ const ModelFile = require('./ModelFile')
 const PythonShell = require('python-shell')
 const rimraf = require('rimraf')
 const sha1 = require('sha1')
+const crypto = require('crypto')
 
 const ControllerExerciseAPI = require('../controller/ControllerExerciseAPI')
 
@@ -269,7 +270,7 @@ class ModelStudentStatement extends Model {
         seed = rndToday
       } else {
         // Modified behavior (when route called by LMS user that is unknown by SOY)
-        const rand = Math.random().toString(36).substring(2) // Generate a random identifer
+        const rand = crypto.randomBytes(16).toString('hex') // Generate a random identifier
         path = '/storage-fs/lms-session/' + exercise.ex_id + '/' + rndToday + '/' + rand + '/'
         seed = rndToday + '/' + rand
       }

@@ -1,6 +1,5 @@
 'use strict'
 const axios = require('axios')
-// const ConfServ = require("../config/ConfServ");
 const fs = require('fs')
 const Model = require('./Model')
 const debug = require('debug')('ModelExerciseProduction')
@@ -8,6 +7,7 @@ const ModelDB = require('./ModelDB')
 const PythonShell = require('python-shell')
 const ModelStudentStatement = require('../model/ModelStudentStatement')
 const ControllerExerciseAPI = require('../controller/ControllerExerciseAPI')
+const crypto = require('crypto')
 
 class ModelExerciseProduction extends Model {
   // Constructeur
@@ -157,7 +157,7 @@ class ModelExerciseProduction extends Model {
       debug('start paths')
       // let path = "/storage-fs/" + user_id + "/" + ex_id + "/";
       const rndToday = new Date().getTime()
-      const rand = Math.random().toString(36).substring(2) // Generate a random identifer
+      const rand = crypto.randomBytes(16).toString('hex') // Generate a random identifier
       const path = '/storage-fs/' + user_id + '/' + ex_id + '/' + rndToday + '/' + rand + '/'
       debug('user_id =' + user_id)
       const fStatementPath = path + 'statement.html'
@@ -299,9 +299,8 @@ class ModelExerciseProduction extends Model {
         // Put all files necessary for analysis in a dedicated folder on the file system
         debug('start paths')
         const rndToday = new Date().getTime()
-        const rand = Math.random().toString(36).substring(2) // Generate a random identifer
+        const rand = crypto.randomBytes(16).toString('hex') // Generate a random identifier
         const path = '/storage-fs/lms-session/' + exercise.ex_id + '/' + rndToday + '/' + rand + '/' // Shouldn't we remove this from file system when the evaluation is done ?
-        const seed = rndToday + '/' + rand // Maybe usefull later ?
         const fStatementPath = path + 'statement.html'
         // let fArchivePath = path + 'archive.tar.gz'
         const fTemplateArchivePath = path + 'question.tar.gz'
