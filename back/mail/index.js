@@ -57,37 +57,41 @@ function getTransporter () {
 }
 
 function sendMail (to, subject, template, CORDIALLY, ALL_RIGHTS_RESERVED, text = '') {
-  return new Promise(async (resolve, reject) => {
-    if (!validateEmail(to)) return reject('Mail invalide : ' + to)
-    let compiledTemplate = await readFileSync(__dirname + '/mail.html', { encoding: 'utf-8' })
-    compiledTemplate = ejs.render(compiledTemplate, {
-      content: template,
-      baseUrl: process.env.PLAGE_ENV,
-      appName: process.env.APP_NAME,
-      emailAccount: process.env.EMAIL_ACCOUNT,
-      ALL_RIGHTS_RESERVED,
-      CORDIALLY,
-    })
+  return new Promise((resolve, reject) => {
+    if (!validateEmail(to)) return reject(new Error('Mail invalide : ' + to))
+    async function compileAndSend () {
+      let compiledTemplate = readFileSync(__dirname + '/mail.html', { encoding: 'utf-8' })
 
-    compiledTemplate = compiledTemplate.replace(/{{ BASE_URL }}/gi, process.env.PLAGE_ENV || '')
+      compiledTemplate = ejs.render(compiledTemplate, {
+        content: template,
+        baseUrl: process.env.PLAGE_ENV,
+        appName: process.env.APP_NAME,
+        emailAccount: process.env.EMAIL_ACCOUNT,
+        ALL_RIGHTS_RESERVED,
+        CORDIALLY,
+      })
 
-    const mailOptions = {
-      from: process.env.EMAIL_ACCOUNT,
-      to,
-      subject,
-      text, // getTextFromTemplate(template),
-      html: compiledTemplate
-    }
+      compiledTemplate = compiledTemplate.replace(/{{ BASE_URL }}/gi, process.env.PLAGE_ENV || '')
 
-    getTransporter().sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log('[MAIl] Email error: ' + error)
-        reject(error)
-      } else {
-        console.log('[MAIL] Email sent to ' + to + ': ' + info)
-        resolve(info)
+      const mailOptions = {
+        from: process.env.EMAIL_ACCOUNT,
+        to,
+        subject,
+        text, // getTextFromTemplate(template),
+        html: compiledTemplate
       }
-    })
+
+      getTransporter().sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log('[MAIl] Email error: ' + error)
+          reject(new Error('Mail error: ' + error))
+        } else {
+          console.log('[MAIL] Email sent to ' + to + ': ' + info)
+          resolve(info)
+        }
+      })
+    }
+    compileAndSend().catch(reject)
   })
 }
 
