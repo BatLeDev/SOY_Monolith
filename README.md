@@ -4,7 +4,6 @@
 
 - [Description](#description)
 - [Content of the repo](#content)
-- [Building the app](#building-the-app)
 - [Configuring](#setting-up-the-app)
 - [Launching](#launching-the-app)
 - [Using](#using-the-app)
@@ -111,6 +110,7 @@ Copyright © 2022 POLYTECH MONTPELLIER.
 ```
 
 ## SonarQube
+
 ```bash
 sonar-scanner \
   -Dsonar.projectKey=SoYMono \
