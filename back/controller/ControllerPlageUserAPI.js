@@ -277,46 +277,52 @@ module.exports.updateProfile = async function (req, res) {
 }
 
 module.exports.login = async function (req, res) {
-  const user = await ModelPlageUser.logPlage(req.body.email, req.body.password)
-  if (user) {
-    if (user !== 'none') {
-      if (user !== 'disabled') {
-        const data = {
-          user_id: user.user_id,
-          email: user.email,
-          lastname: user.lastname,
-          firstname: user.firstname,
-          locale: user.locale,
-          role_id: user.role_id
+  if (!req.body.email || !req.body.password) {
+    res.status(400).json({
+      message: req.i18n.__('Missing email or password')
+    })
+  } else {
+    const user = await ModelPlageUser.logPlage(req.body.email, req.body.password)
+    if (user) {
+      if (user !== 'none') {
+        if (user !== 'disabled') {
+          const data = {
+            user_id: user.user_id,
+            email: user.email,
+            lastname: user.lastname,
+            firstname: user.firstname,
+            locale: user.locale,
+            role_id: user.role_id
+          }
+
+          const accessTokenExpiration = process.env.ACCESS_TOKEN_DURATION || '300000'
+          const token = jwt.sign(data, process.env.SECRET_JWT, { expiresIn: accessTokenExpiration })
+          res.cookie('access_token', token, { maxAge: accessTokenExpiration, httpOnly: true, SameSite: 'Strict' })
+
+          const refreshTokenExpiration = process.env.REFRESH_TOKEN_DURATION || '172800000'
+          const refreshToken = jwt.sign({ email: data.email }, process.env.SECRET_JWT, { expiresIn: refreshTokenExpiration })
+          res.cookie('refreshToken', refreshToken, { maxAge: refreshTokenExpiration, httpOnly: true, SameSite: 'Strict' })
+
+          tokenList[refreshToken] = { access_token: token, refreshToken }
+
+          res.status(200).json(data)
+        } else {
+          res.status(412).json({
+            message: req.i18n.__(
+              'This account is not yet enabled, please check your emails'
+            )
+          })
         }
-
-        const accessTokenExpiration = process.env.ACCESS_TOKEN_DURATION || '300000'
-        const token = jwt.sign(data, process.env.SECRET_JWT, { expiresIn: accessTokenExpiration })
-        res.cookie('access_token', token, { maxAge: accessTokenExpiration, httpOnly: true, SameSite: 'Strict' })
-
-        const refreshTokenExpiration = process.env.REFRESH_TOKEN_DURATION || '172800000'
-        const refreshToken = jwt.sign({ email: data.email }, process.env.SECRET_JWT, { expiresIn: refreshTokenExpiration })
-        res.cookie('refreshToken', refreshToken, { maxAge: refreshTokenExpiration, httpOnly: true, SameSite: 'Strict' })
-
-        tokenList[refreshToken] = { access_token: token, refreshToken }
-
-        res.status(200).json(data)
       } else {
-        res.status(412).json({
-          message: req.i18n.__(
-            'This account is not yet enabled, please check your emails'
-          )
+        res.status(400).json({
+          message: req.i18n.__('Wrong account or password')
         })
       }
     } else {
-      res.status(400).json({
-        message: req.i18n.__('Wrong account or password')
+      res.status(500).json({
+        message: req.i18n.__('Internal server error')
       })
     }
-  } else {
-    res.status(500).json({
-      message: req.i18n.__('Internal server error')
-    })
   }
 }
 
