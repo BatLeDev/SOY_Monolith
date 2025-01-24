@@ -2,7 +2,8 @@ const ejs = require('ejs')
 const { readFileSync } = require('fs')
 const nodemailer = require('nodemailer')
 
-const transporter = getTransporter()
+let transporter
+transporter = getTransporter()
 transporter.verify(function (error, success) {
   if (error) {
     console.error(error)
